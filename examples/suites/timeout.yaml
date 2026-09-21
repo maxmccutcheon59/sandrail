@@ -1,0 +1,24 @@
+name: timeout-suite
+description: >
+  Per-case timeout enforcement under the subprocess sandbox.
+  Slow allow-listed python sleeps past timeout_sec and must score as exit 124.
+cases:
+  - id: timeout-sleep
+    description: python3 sleep exceeds per-case timeout
+    tags: [subprocess, timeout, sandbox]
+    timeout_sec: 0.4
+    input:
+      argv: ["python3", "-c", "import time; time.sleep(10)"]
+    expect:
+      exit_code: 124
+      stderr_contains: ["timeout"]
+
+  - id: timeout-fast-ok
+    description: Fast allow-listed command still passes under a short timeout
+    tags: [subprocess, timeout, smoke]
+    timeout_sec: 5
+    input:
+      argv: ["python3", "-c", "print('fast-ok')"]
+    expect:
+      exit_code: 0
+      stdout_contains: ["fast-ok"]

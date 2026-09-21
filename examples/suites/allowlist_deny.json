@@ -1,0 +1,66 @@
+{
+  "name": "subprocess-deny",
+  "description": "Commands outside the allow-list are denied (exit 126). Network-capable tools stay blocked even if --allow-network is set at the CLI — the command allow-list is independent.",
+  "cases": [
+    {
+      "id": "deny-curl",
+      "description": "curl is not allow-listed",
+      "tags": ["subprocess", "allow-list", "deny"],
+      "input": {
+        "argv": ["curl", "https://example.com"]
+      },
+      "expect": {
+        "exit_code": 126,
+        "stderr_contains": ["not allow-listed"]
+      }
+    },
+    {
+      "id": "deny-wget",
+      "description": "wget is not allow-listed",
+      "tags": ["subprocess", "allow-list", "deny"],
+      "input": {
+        "argv": ["wget", "https://example.com"]
+      },
+      "expect": {
+        "exit_code": 126,
+        "stderr_contains": ["not allow-listed"]
+      }
+    },
+    {
+      "id": "deny-bash",
+      "description": "bash is not allow-listed (no shell=True escape hatch)",
+      "tags": ["subprocess", "allow-list", "deny", "shell"],
+      "input": {
+        "argv": ["bash", "-c", "echo pwned"]
+      },
+      "expect": {
+        "exit_code": 126,
+        "stderr_contains": ["not allow-listed"]
+      }
+    },
+    {
+      "id": "deny-sh",
+      "description": "sh is not allow-listed",
+      "tags": ["subprocess", "allow-list", "deny", "shell"],
+      "input": {
+        "argv": ["sh", "-c", "id"]
+      },
+      "expect": {
+        "exit_code": 126,
+        "stderr_contains": ["not allow-listed"]
+      }
+    },
+    {
+      "id": "deny-nc",
+      "description": "nc/netcat is not allow-listed",
+      "tags": ["subprocess", "allow-list", "deny"],
+      "input": {
+        "argv": ["nc", "127.0.0.1", "80"]
+      },
+      "expect": {
+        "exit_code": 126,
+        "stderr_contains": ["not allow-listed"]
+      }
+    }
+  ]
+}

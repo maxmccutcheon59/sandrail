@@ -5,6 +5,9 @@
 
 ## Product posture
 
+**Not a hosted SaaS / no invented traction.** Sandrail is open-source, local-first CLI software. This repository does **not** operate accounts, billing, cloud sync, or a multi-tenant service. Marketing and landing copy must not invent users, revenue, or hosted-product claims.
+
+
 - **Local-first eval harness / agent sandbox CLI** for scoring pluggable agent backends (mock, allow-listed subprocess, optional OpenAI-compatible local API).
 - **Not a full LLM** and **does not train models**.
 - **Secure-by-default:** network deny unless opted in; no `shell=True` with user strings; argument arrays only; cwd jail; timeouts; log redaction.

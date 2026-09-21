@@ -1,0 +1,24 @@
+name: mock-pass-fail
+description: >
+  Shows a passing mock case and an intentional failing case so founders can
+  see how CI gates look when an agent regresses. Expect suite exit code 1.
+cases:
+  - id: mock-pass-greeting
+    description: Passing mock case
+    tags: [mock, pass, smoke]
+    input:
+      prompt: "Say hello"
+      respond: "hello from mock"
+    expect:
+      exit_code: 0
+      stdout_contains: ["hello from mock"]
+
+  - id: mock-fail-regression
+    description: Intentional fail — simulates a prompt regression (missing needle)
+    tags: [mock, fail, demo]
+    input:
+      prompt: "Say hello"
+      respond: "goodbye from mock"
+    expect:
+      exit_code: 0
+      stdout_contains: ["hello from mock"]

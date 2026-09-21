@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] — 2026-09-21
 
 ### Added
+- Stable landing commands: `pip install -e .`, `sandrail demo`, `sandrail run examples/suites/…`.
+- `scripts/founder_demo.sh` founder wow wrapper.
+- Canonical `examples/suites/` (smoke, timeout, allowlist deny, redaction, mock pass/fail).
 
 - Optional **JUnit XML** reports via `--junit-xml PATH` for CI consumers (GitHub Actions, Jenkins, GitLab, etc.). Streams in the report are already redacted by the runner.
 - Expanded built-in eval examples:

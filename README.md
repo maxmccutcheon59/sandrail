@@ -1,20 +1,38 @@
 # Sandrail
 
-**Local-first AI eval harness / agent sandbox CLI** — the kind of engineering software AI startups use to score agents safely on a laptop or in CI.
+**Local-first AI eval harness / agent sandbox CLI** — score agents safely on a laptop or in CI.
 
-Sandrail runs JSON/YAML eval suites against pluggable backends (deterministic **mock**, allow-listed **subprocess**, optional **OpenAI-compatible** local API). Sandbox defaults are secure: **no network**, timeout, cwd jail, stdout/stderr capture, exit-code scoring, and **secret redaction** so prompt-injection fixtures cannot leak credentials into logs. Optional **JUnit XML** output plugs into existing CI dashboards.
+Not a hosted SaaS. No accounts. No telemetry. Secure defaults: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Optional JUnit XML for CI.
 
-> Not a full LLM. No training. Optional API hook only when `OPENAI_BASE_URL` is set; secrets via environment variables only.
+## 60-second demo (landing commands)
 
-| Sibling (portfolio) | Focus |
-|---------------------|--------|
-| **[Watchwire](https://github.com/maxmccutcheon59/watchwire)** | Local secret scanning |
-| **[Sysguard](https://github.com/maxmccutcheon59/sysguard)** | Defensive host checks |
-| **Sandrail** (this repo) | Agent eval + sandbox harness |
+```bash
+git clone https://github.com/maxmccutcheon59/sandrail.git
+cd sandrail
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
+sandrail demo
+```
+
+Or run suites directly:
+
+```bash
+sandrail run examples/suites/smoke.yaml --backend mock
+sandrail run examples/suites/subprocess_smoke.yaml --backend subprocess
+sandrail run examples/suites/allowlist_deny.json --backend subprocess
+sandrail run examples/suites/timeout.yaml --backend subprocess
+export SANDRAIL_FIXTURE_SECRET='synth-secret-DO-NOT-USE-9f3a2c1b'
+sandrail run examples/suites/redaction.yaml --backend mock --format json
+sandrail run examples/suites/mock_pass_fail.yaml --backend mock   # expect exit 1 (CI gate demo)
+```
+
+Wrapper script (same path): `./scripts/founder_demo.sh`
+
+> Honest OSS positioning: this is an open-source, local-first portfolio/tooling project. It does **not** claim users, revenue, or a hosted product.
 
 ---
 
-## Why startups care
+## Why founders use this
 
 AI product teams need **repeatable, local, CI-friendly evals** before they trust an agent in production:
 
@@ -32,7 +50,8 @@ AI product teams need **repeatable, local, CI-friendly evals** before they trust
 git clone https://github.com/maxmccutcheon59/sandrail.git
 cd sandrail
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e .
+# optional: pip install -e ".[dev]"
 ```
 
 Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib).
@@ -43,26 +62,26 @@ Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib).
 
 ```bash
 # Deterministic mock suite (no network)
-sandrail run examples/suite.yaml --backend mock
+sandrail run examples/suites/smoke.yaml --backend mock
 
 # Human table + JSON
-sandrail run examples/suite.yaml --backend mock --format both
+sandrail run examples/suites/smoke.yaml --backend mock --format both
 
 # Allow-listed subprocess under sandbox (network still denied)
-sandrail run examples/cases/subprocess_smoke.yaml --backend subprocess
+sandrail run examples/suites/subprocess_smoke.yaml --backend subprocess
 
 # Allow-list deny fixtures (curl/wget/bash/sh/nc → exit 126)
-sandrail run examples/cases/subprocess_deny.json --backend subprocess
+sandrail run examples/suites/allowlist_deny.json --backend subprocess
 
 # Timeout fixtures (slow sleep → exit 124)
-sandrail run examples/cases/timeout.yaml --backend subprocess
+sandrail run examples/suites/timeout.yaml --backend subprocess
 
 # Prompt-injection / redaction fixtures (synthetic secret via env)
 export SANDRAIL_FIXTURE_SECRET='synth-secret-DO-NOT-USE-9f3a2c1b'
-sandrail run examples/cases/prompt_injection_redaction.yaml --backend mock --format json
+sandrail run examples/suites/redaction.yaml --backend mock --format json
 
 # Optional JUnit XML for CI consumers
-sandrail run examples/suite.yaml --backend mock --junit-xml junit.xml
+sandrail run examples/suites/smoke.yaml --backend mock --junit-xml junit.xml
 
 # Optional local OpenAI-compatible API (explicit network opt-in)
 # export OPENAI_BASE_URL=http://127.0.0.1:11434/v1
@@ -159,7 +178,8 @@ See **[SECURITY.md](SECURITY.md)** and **[COMPLIANCE_NOTES.md](COMPLIANCE_NOTES.
 ## Development
 
 ```bash
-pip install -e ".[dev]"
+pip install -e .
+# optional: pip install -e ".[dev]"
 pytest -q
 ruff check src tests
 ```
