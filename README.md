@@ -4,6 +4,8 @@
 
 Not a hosted SaaS. No accounts. No telemetry. Secure defaults: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Optional JUnit XML for CI.
 
+**Product page:** [maxmccutcheon59.github.io/sandrail-site](https://maxmccutcheon59.github.io/sandrail-site/) (honest local-first overview — no fake traction).
+
 ## 60-second demo (landing commands)
 
 ```bash
