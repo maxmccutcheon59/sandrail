@@ -57,3 +57,6 @@ Fixture secrets in examples/tests are **synthetic** and must never be real crede
 ## Version notes
 
 - **v0.2.0:** Optional JUnit XML reporting; expanded local eval fixtures (timeout, allow-list deny, redaction). No new network features; secure defaults unchanged. Threat model documented in `SECURITY.md`.
+
+- **v0.3.0:** Suite packs (`ci_gate`, `tool_sandbox`, `redaction`) + `sandrail packs list|run`. No new network features; bundled packs keep `allow_network: false`. No outreach / telemetry. Landing docs link only. Secure defaults unchanged.
+

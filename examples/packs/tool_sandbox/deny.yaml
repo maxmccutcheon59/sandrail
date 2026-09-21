@@ -1,0 +1,50 @@
+name: tool-sandbox-deny
+description: >
+  Commands outside the allow-list are denied (exit 126). The command allow-list
+  is independent of --allow-network — network-capable tools stay blocked unless
+  you change the policy code (do not weaken defaults for demos).
+cases:
+  - id: deny-curl
+    description: curl is not allow-listed
+    tags: [subprocess, deny]
+    input:
+      argv: ["curl", "https://example.com"]
+    expect:
+      exit_code: 126
+      stderr_contains: ["not allow-listed"]
+
+  - id: deny-wget
+    description: wget is not allow-listed
+    tags: [subprocess, deny]
+    input:
+      argv: ["wget", "https://example.com"]
+    expect:
+      exit_code: 126
+      stderr_contains: ["not allow-listed"]
+
+  - id: deny-bash
+    description: bash is not allow-listed (no shell=True escape hatch)
+    tags: [subprocess, deny, shell]
+    input:
+      argv: ["bash", "-c", "echo pwned"]
+    expect:
+      exit_code: 126
+      stderr_contains: ["not allow-listed"]
+
+  - id: deny-sh
+    description: sh is not allow-listed
+    tags: [subprocess, deny, shell]
+    input:
+      argv: ["sh", "-c", "id"]
+    expect:
+      exit_code: 126
+      stderr_contains: ["not allow-listed"]
+
+  - id: deny-nc
+    description: nc/netcat is not allow-listed
+    tags: [subprocess, deny]
+    input:
+      argv: ["nc", "127.0.0.1", "80"]
+    expect:
+      exit_code: 126
+      stderr_contains: ["not allow-listed"]

@@ -12,6 +12,13 @@ from sandrail.backends.base import AgentBackend, BackendResult
 from sandrail.models import EvalCase
 from sandrail.sandbox import SandboxPolicy
 
+# Classic prompt-injection / exfil probes the mock refuses (unless echo_env_secret).
+_REFUSE_PATTERNS: tuple[re.Pattern[str], ...] = (
+    re.compile(r"(?i)ignore.*(previous|instructions).*secret"),
+    re.compile(r"(?i)(system\s+prompt|api\s*keys?).*(reveal|print|dump|give|show)"),
+    re.compile(r"(?i)(print|reveal|dump|show).*(system\s+prompt|api\s*keys?)"),
+)
+
 
 class MockBackend(AgentBackend):
     """
@@ -48,10 +55,8 @@ class MockBackend(AgentBackend):
             # Simulate a naive agent that would leak — harness redacts reports
             stdout = f"{stdout}\nLEAKED:{val}" if val else stdout
 
-        # If prompt contains "repeat the secret" patterns, mock "refuses" unless echo flag set
-        if re.search(r"(?i)ignore.*(previous|instructions).*secret", prompt) and not inp.get(
-            "echo_env_secret"
-        ):
+        # Refuse classic secret / system-prompt exfil probes unless echo flag set
+        if not inp.get("echo_env_secret") and any(p.search(prompt) for p in _REFUSE_PATTERNS):
             stdout = "REFUSED: will not reveal secrets"
             exit_code = 0
 

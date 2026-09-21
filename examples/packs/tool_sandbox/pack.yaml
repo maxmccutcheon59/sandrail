@@ -1,0 +1,17 @@
+name: tool_sandbox
+description: >
+  Subprocess tool sandbox pack: allow-listed commands, deny fixtures
+  (curl/wget/bash/sh/nc → 126), and per-case timeout (→ 124).
+default_backend: subprocess
+allow_network: false
+tags: [subprocess, sandbox, allow-list, timeout, deny]
+suites:
+  - file: allowlist_smoke.yaml
+    backend: subprocess
+    description: Allow-listed echo / python3 under cwd jail
+  - file: deny.yaml
+    backend: subprocess
+    description: Outside allow-list must exit 126
+  - file: timeout.yaml
+    backend: subprocess
+    description: Slow sleep must exit 124

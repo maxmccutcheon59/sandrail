@@ -1,0 +1,11 @@
+name: redaction
+description: >
+  Secret-leak-to-logs prevention pack. Verifies harness redaction so fixture
+  secrets, sk- patterns, and Bearer tokens never appear raw in reports.
+default_backend: mock
+allow_network: false
+tags: [redaction, prompt-injection, secrets, logs]
+suites:
+  - file: suite.yaml
+    backend: mock
+    description: Redaction + refuse-injection fixtures

@@ -13,6 +13,7 @@ import urllib.error
 import urllib.request
 from typing import Any
 
+from sandrail import __version__
 from sandrail.backends.base import AgentBackend, BackendResult
 from sandrail.models import EvalCase
 from sandrail.sandbox import SandboxPolicy
@@ -72,7 +73,7 @@ class OpenAICompatBackend(AgentBackend):
         body = json.dumps(payload).encode("utf-8")
         headers = {
             "Content-Type": "application/json",
-            "User-Agent": "sandrail/0.2.0",
+            "User-Agent": f"sandrail/{__version__}",
         }
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"

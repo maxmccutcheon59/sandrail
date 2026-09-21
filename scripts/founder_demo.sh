@@ -3,6 +3,8 @@
 # Exact commands the GTM landing expects:
 #   pip install -e .
 #   sandrail demo
+#   sandrail packs list
+#   sandrail packs run ci_gate
 #   sandrail run examples/suites/...
 set -euo pipefail
 
@@ -15,6 +17,7 @@ export SANDRAIL_EXAMPLES="${SANDRAIL_EXAMPLES:-$ROOT/examples}"
 echo "==> Sandrail founder demo"
 echo "    repo: $ROOT"
 echo "    commands: pip install -e . && sandrail demo"
+echo "    packs:    sandrail packs list && sandrail packs run ci_gate"
 echo
 
 if [[ ! -x "$ROOT/.venv/bin/sandrail" ]] && ! command -v sandrail >/dev/null 2>&1; then
@@ -37,7 +40,12 @@ fi
 echo "→ ${SANDRAIL_BIN[*]} demo"
 "${SANDRAIL_BIN[@]}" demo "$@"
 echo
-echo "→ example suite commands (stable paths):"
+echo "→ example suite + pack commands (stable paths):"
+echo "    sandrail packs list"
+echo "    sandrail packs run ci_gate"
+echo "    sandrail packs run tool_sandbox"
+echo "    sandrail packs run redaction"
+echo "    sandrail run examples/packs/ci_gate/suite.yaml --backend mock"
 echo "    sandrail run examples/suites/smoke.yaml --backend mock"
 echo "    sandrail run examples/suites/timeout.yaml --backend subprocess"
 echo "    sandrail run examples/suites/allowlist_deny.json --backend subprocess"

@@ -2,9 +2,9 @@
 
 **Local-first AI eval harness / agent sandbox CLI** — score agents safely on a laptop or in CI.
 
-Not a hosted SaaS. No accounts. No telemetry. Secure defaults: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Optional JUnit XML for CI.
+Not a hosted SaaS. No accounts. No telemetry. Secure defaults: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Optional JUnit XML for CI. Copyable **suite packs** under `examples/packs/`.
 
-**Product page:** [maxmccutcheon59.github.io/sandrail-site](https://maxmccutcheon59.github.io/sandrail-site/) (honest local-first overview — no fake traction).
+**Product page:** [https://maxmccutcheon59.github.io/sandrail-site/](https://maxmccutcheon59.github.io/sandrail-site/) — honest local-first overview (no fake traction, no invented compliance).
 
 ## 60-second demo (landing commands)
 
@@ -14,11 +14,16 @@ cd sandrail
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 sandrail demo
+sandrail packs list
+sandrail packs run ci_gate
 ```
 
-Or run suites directly:
+Or run suites / packs directly:
 
 ```bash
+sandrail packs run tool_sandbox
+sandrail packs run redaction
+sandrail run examples/packs/ci_gate/suite.yaml --backend mock
 sandrail run examples/suites/smoke.yaml --backend mock
 sandrail run examples/suites/subprocess_smoke.yaml --backend subprocess
 sandrail run examples/suites/allowlist_deny.json --backend subprocess
@@ -38,11 +43,30 @@ Wrapper script (same path): `./scripts/founder_demo.sh`
 
 AI product teams need **repeatable, local, CI-friendly evals** before they trust an agent in production:
 
-1. **Regression gates** — lock behavior with YAML/JSON cases; fail the build when a prompt change regresses.
-2. **Sandbox by default** — deny network unless opted in; cwd jail; allow-listed commands; never `shell=True` with user strings.
-3. **Harness integrity** — prompt-injection fixtures assert secrets do not appear in reports (redaction).
+1. **Regression gates** — lock behavior with YAML/JSON cases; fail the build when a prompt change regresses. Start from `sandrail packs run ci_gate`.
+2. **Sandbox by default** — deny network unless opted in; cwd jail; allow-listed commands; never `shell=True` with user strings. Pack: `tool_sandbox`.
+3. **Harness integrity** — prompt-injection fixtures assert secrets do not appear in reports (redaction). Pack: `redaction`.
 4. **Pluggable backends** — start with a mock (fast CI), graduate to subprocess tools, optionally hit a local OpenAI-compatible server.
 5. **CI exit codes + JUnit** — `0` all pass, `1` failures, `2` usage/load errors; optional `--junit-xml` for artifact upload.
+
+---
+
+## Suite packs (v0.3)
+
+| Pack | Command | What it is |
+|------|---------|------------|
+| `ci_gate` | `sandrail packs run ci_gate` | Mock regression gate founders can copy into CI |
+| `tool_sandbox` | `sandrail packs run tool_sandbox` | Allow-list smoke · deny (126) · timeout (124) |
+| `redaction` | `sandrail packs run redaction` | Secret-leak-to-logs prevention |
+
+```bash
+sandrail packs list
+sandrail packs run ci_gate --junit-xml junit-ci-gate.xml
+# equivalent:
+sandrail run examples/packs/ci_gate/suite.yaml --backend mock
+```
+
+See [`examples/packs/README.md`](examples/packs/README.md).
 
 ---
 
@@ -63,6 +87,10 @@ Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib).
 ## Quick start
 
 ```bash
+# Packs (recommended entry for founders)
+sandrail packs list
+sandrail packs run ci_gate
+
 # Deterministic mock suite (no network)
 sandrail run examples/suites/smoke.yaml --backend mock
 

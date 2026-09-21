@@ -1,0 +1,12 @@
+name: ci_gate
+description: >
+  Mock regression gate pack founders can copy into CI. suite.yaml is the green
+  gate (exit 0). expected_fail.yaml is an intentional regression demo (exit 1) —
+  run it separately to see how a broken agent looks in CI.
+default_backend: mock
+allow_network: false
+tags: [ci, gate, mock, regression]
+suites:
+  - file: suite.yaml
+    backend: mock
+    description: Green regression gate (must stay green in CI)

@@ -5,6 +5,7 @@ from __future__ import annotations
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from sandrail import __version__
 from sandrail.models import CaseResult, SuiteReport
 from sandrail.redaction import REDACTED
 from sandrail.report import build_junit_tree, write_junit_xml
@@ -35,7 +36,7 @@ def _sample_report(*, failed: bool = False, secret: str | None = None) -> SuiteR
         total=1,
         results=results,
         allow_network=False,
-        version="0.2.0",
+        version=__version__,
     )
 
 
@@ -86,4 +87,4 @@ def test_build_junit_tree_backend_attr():
     suite = tree.find("testsuite")
     assert suite is not None
     assert suite.get("backend") == "mock"
-    assert suite.get("sandrail_version") == "0.2.0"
+    assert suite.get("sandrail_version") == __version__

@@ -1,0 +1,24 @@
+name: ci-gate-expected-fail
+description: >
+  Intentional fail fixture — NOT part of the default pack run. Shows founders
+  what a CI gate looks like when an agent regresses (expect exit 1).
+cases:
+  - id: still-passes
+    description: Control case that still passes
+    tags: [ci, demo, pass]
+    input:
+      prompt: "Say hello"
+      respond: "hello from mock"
+    expect:
+      exit_code: 0
+      stdout_contains: ["hello from mock"]
+
+  - id: simulated-regression
+    description: Intentional miss — agent drifted from locked greeting
+    tags: [ci, demo, fail]
+    input:
+      prompt: "Say hello"
+      respond: "hey there (drifted copy)"
+    expect:
+      exit_code: 0
+      stdout_contains: ["hello from mock"]
