@@ -2,11 +2,11 @@
 
 **Local-first AI eval harness / agent sandbox CLI** — score agents safely on a laptop or in CI.
 
-Not a hosted SaaS. No accounts. No telemetry. Secure defaults: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Optional JUnit XML for CI. Copyable **suite packs** under `examples/packs/`.
+Secure by default: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Not a hosted SaaS. No accounts. No telemetry.
 
-**Product page:** [https://maxmccutcheon59.github.io/sandrail-site/](https://maxmccutcheon59.github.io/sandrail-site/) — honest local-first overview (no fake traction, no invented compliance).
+**Product page:** [https://maxmccutcheon59.github.io/sandrail-site/](https://maxmccutcheon59.github.io/sandrail-site/) — honest local-first overview (no fake traction).
 
-## 60-second demo (landing commands)
+## Install
 
 ```bash
 git clone https://github.com/maxmccutcheon59/sandrail.git
@@ -18,26 +18,15 @@ sandrail packs list
 sandrail packs run ci_gate
 ```
 
-Or run suites / packs directly:
+Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib). Optional: `pip install -e ".[dev]"`.
 
-```bash
-sandrail packs run tool_sandbox
-sandrail packs run redaction
-sandrail run examples/packs/ci_gate/suite.yaml --backend mock
-sandrail run examples/suites/smoke.yaml --backend mock
-sandrail run examples/suites/subprocess_smoke.yaml --backend subprocess
-sandrail run examples/suites/allowlist_deny.json --backend subprocess
-sandrail run examples/suites/timeout.yaml --backend subprocess
-export SANDRAIL_FIXTURE_SECRET='synth-secret-DO-NOT-USE-9f3a2c1b'
-sandrail run examples/suites/redaction.yaml --backend mock --format json
-sandrail run examples/suites/mock_pass_fail.yaml --backend mock   # expect exit 1 (CI gate demo)
-```
+## Security stance
 
-Wrapper script (same path): `./scripts/founder_demo.sh`
-
-> Honest OSS positioning: this is an open-source, local-first portfolio/tooling project. It does **not** claim users, revenue, or a hosted product.
-
----
+- **Network deny** unless you pass `--allow-network` (openai backend only).
+- **No shell strings** — subprocess uses argument arrays (`shell=False`).
+- **Command allow-list** + **cwd jail** + **timeouts** + **log redaction**.
+- Authorized **local** use only — do not point Sandrail at systems you do not own or lack written permission to test.
+- Secrets via env only; fixture secrets are synthetic. See [SECURITY.md](SECURITY.md).
 
 ## Why founders use this
 
@@ -67,20 +56,6 @@ sandrail run examples/packs/ci_gate/suite.yaml --backend mock
 ```
 
 See [`examples/packs/README.md`](examples/packs/README.md).
-
----
-
-## Install
-
-```bash
-git clone https://github.com/maxmccutcheon59/sandrail.git
-cd sandrail
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e .
-# optional: pip install -e ".[dev]"
-```
-
-Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib).
 
 ---
 
