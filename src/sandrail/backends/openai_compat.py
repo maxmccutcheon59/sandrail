@@ -72,7 +72,7 @@ class OpenAICompatBackend(AgentBackend):
         body = json.dumps(payload).encode("utf-8")
         headers = {
             "Content-Type": "application/json",
-            "User-Agent": "sandrail/0.1.0",
+            "User-Agent": "sandrail/0.2.0",
         }
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"

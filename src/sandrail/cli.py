@@ -9,7 +9,7 @@ from pathlib import Path
 from sandrail import __version__
 from sandrail.backends import get_backend
 from sandrail.loader import load_suite
-from sandrail.report import write_json, write_table
+from sandrail.report import write_json, write_junit_xml, write_table
 from sandrail.runner import default_policy, run_suite
 
 
@@ -63,6 +63,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Report format (default: table, or json if --json)",
     )
+    run_p.add_argument(
+        "--junit-xml",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help="Write a JUnit XML report to PATH (for CI consumers; optional)",
+    )
 
     sub.add_parser("backends", help="List available backends")
     sub.add_parser("version", help="Print version")
@@ -115,6 +122,13 @@ def main(argv: list[str] | None = None) -> int:
             write_table(report)
         if fmt in {"json", "both"}:
             write_json(report)
+
+        if args.junit_xml:
+            try:
+                write_junit_xml(report, path=args.junit_xml)
+            except OSError as exc:
+                print(f"error: failed to write JUnit XML: {exc}", file=sys.stderr)
+                return 2
 
         return 0 if report.ok else 1
 

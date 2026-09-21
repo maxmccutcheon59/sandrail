@@ -2,7 +2,7 @@
 
 **Local-first AI eval harness / agent sandbox CLI** — the kind of engineering software AI startups use to score agents safely on a laptop or in CI.
 
-Sandrail runs JSON/YAML eval suites against pluggable backends (deterministic **mock**, allow-listed **subprocess**, optional **OpenAI-compatible** local API). Sandbox defaults are secure: **no network**, timeout, cwd jail, stdout/stderr capture, exit-code scoring, and **secret redaction** so prompt-injection fixtures cannot leak credentials into logs.
+Sandrail runs JSON/YAML eval suites against pluggable backends (deterministic **mock**, allow-listed **subprocess**, optional **OpenAI-compatible** local API). Sandbox defaults are secure: **no network**, timeout, cwd jail, stdout/stderr capture, exit-code scoring, and **secret redaction** so prompt-injection fixtures cannot leak credentials into logs. Optional **JUnit XML** output plugs into existing CI dashboards.
 
 > Not a full LLM. No training. Optional API hook only when `OPENAI_BASE_URL` is set; secrets via environment variables only.
 
@@ -22,7 +22,7 @@ AI product teams need **repeatable, local, CI-friendly evals** before they trust
 2. **Sandbox by default** — deny network unless opted in; cwd jail; allow-listed commands; never `shell=True` with user strings.
 3. **Harness integrity** — prompt-injection fixtures assert secrets do not appear in reports (redaction).
 4. **Pluggable backends** — start with a mock (fast CI), graduate to subprocess tools, optionally hit a local OpenAI-compatible server.
-5. **CI exit codes** — `0` all pass, `1` failures, `2` usage/load errors.
+5. **CI exit codes + JUnit** — `0` all pass, `1` failures, `2` usage/load errors; optional `--junit-xml` for artifact upload.
 
 ---
 
@@ -51,9 +51,18 @@ sandrail run examples/suite.yaml --backend mock --format both
 # Allow-listed subprocess under sandbox (network still denied)
 sandrail run examples/cases/subprocess_smoke.yaml --backend subprocess
 
+# Allow-list deny fixtures (curl/wget/bash/sh/nc → exit 126)
+sandrail run examples/cases/subprocess_deny.json --backend subprocess
+
+# Timeout fixtures (slow sleep → exit 124)
+sandrail run examples/cases/timeout.yaml --backend subprocess
+
 # Prompt-injection / redaction fixtures (synthetic secret via env)
 export SANDRAIL_FIXTURE_SECRET='synth-secret-DO-NOT-USE-9f3a2c1b'
 sandrail run examples/cases/prompt_injection_redaction.yaml --backend mock --format json
+
+# Optional JUnit XML for CI consumers
+sandrail run examples/suite.yaml --backend mock --junit-xml junit.xml
 
 # Optional local OpenAI-compatible API (explicit network opt-in)
 # export OPENAI_BASE_URL=http://127.0.0.1:11434/v1
@@ -63,6 +72,8 @@ sandrail run examples/cases/prompt_injection_redaction.yaml --backend mock --for
 ```
 
 Exit codes: **0** pass · **1** one or more cases failed · **2** bad suite / usage.
+
+See [`examples/README.md`](examples/README.md) for the full built-in suite index.
 
 ---
 
@@ -100,11 +111,24 @@ input:
 | Control | Default | Notes |
 |---------|---------|--------|
 | Network | **Deny** | Opt in with `--allow-network`. When denied, uses `unshare --net` if the kernel allows it; otherwise scrub proxy env (best-effort on restricted hosts). |
-| Timeout | 30s | `--timeout` / per-case `timeout_sec` |
+| Timeout | 30s | `--timeout` / per-case `timeout_sec` (timeout → exit `124`) |
 | Cwd jail | Suite parent dir | `--cwd-root`; resolved paths must stay under root |
-| Commands | Allow-list | `python3`, `echo`, `true`, `false`, `cat`, … — not `curl`/`bash -c` |
+| Commands | Allow-list | `python3`, `echo`, `true`, `false`, `cat`, … — not `curl`/`bash`/`sh`/`wget`/`nc` |
 | Shell | **Off** | `subprocess` with `shell=False` only |
 | Logs | Redacted | Patterns + `secrets_must_not_leak` + known env secret values |
+
+Full threat model: **[SECURITY.md](SECURITY.md)**.
+
+---
+
+## Reports
+
+| Format | Flag | Use |
+|--------|------|-----|
+| Table | default / `--format table` | Human terminal |
+| JSON | `--format json` or `--json` | Machine / scripting |
+| Both | `--format both` | Table then JSON on stdout |
+| JUnit XML | `--junit-xml PATH` | CI dashboards / artifacts (optional; combines with any format above) |
 
 ---
 

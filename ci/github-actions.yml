@@ -38,6 +38,15 @@ jobs:
       - name: Pytest
         run: pytest -q
 
+      - name: Example suites (mock + deny + timeout)
+        env:
+          SANDRAIL_FIXTURE_SECRET: synth-secret-DO-NOT-USE-9f3a2c1b
+        run: |
+          sandrail run examples/suite.yaml --backend mock --junit-xml junit-mock.xml
+          sandrail run examples/cases/subprocess_deny.json --backend subprocess
+          sandrail run examples/cases/timeout.yaml --backend subprocess
+          sandrail run examples/cases/prompt_injection_redaction.yaml --backend mock --format json
+
   secret-scan:
     runs-on: ubuntu-latest
     permissions:

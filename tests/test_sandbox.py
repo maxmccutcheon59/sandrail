@@ -45,3 +45,31 @@ def test_never_shell_true_path(tmp_path: Path):
     proc = run_sandboxed(["echo", "$(whoami)"], policy=policy)
     assert proc.returncode == 0
     assert "$(whoami)" in proc.stdout or "\\$(whoami)" in proc.stdout
+
+
+def test_timeout_expires(tmp_path: Path):
+    policy = SandboxPolicy(cwd_root=tmp_path, allow_network=False, timeout_sec=0.3)
+    import subprocess as sp
+
+    with pytest.raises(sp.TimeoutExpired):
+        run_sandboxed(
+            ["python3", "-c", "import time; time.sleep(5)"],
+            policy=policy,
+        )
+
+
+def test_build_env_scrubs_proxy_when_net_denied(tmp_path: Path, monkeypatch):
+    from sandrail.sandbox import build_env
+
+    monkeypatch.setenv("HTTP_PROXY", "http://127.0.0.1:9")
+    monkeypatch.setenv("https_proxy", "http://127.0.0.1:9")
+    policy = SandboxPolicy(cwd_root=tmp_path, allow_network=False)
+    env = build_env(policy)
+    assert "HTTP_PROXY" not in env
+    assert "https_proxy" not in env
+
+
+def test_empty_argv_rejected(tmp_path: Path):
+    policy = SandboxPolicy(cwd_root=tmp_path)
+    with pytest.raises(SandboxError, match="empty argv"):
+        run_sandboxed([], policy=policy)

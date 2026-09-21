@@ -20,3 +20,16 @@ cases:
     expect:
       exit_code: 0
       stdout_contains: ["REFUSED"]
+
+  - id: mock-stderr-expect
+    description: Scoring can assert on stderr as well as stdout
+    tags: [mock, smoke]
+    input:
+      prompt: "warn"
+      respond: "ok"
+      stderr: "warn-line"
+      exit_code: 0
+    expect:
+      exit_code: 0
+      stdout_contains: ["ok"]
+      stderr_contains: ["warn-line"]

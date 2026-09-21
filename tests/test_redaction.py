@@ -28,3 +28,19 @@ def test_env_secret_scrubbed(monkeypatch):
     out, changed = redact_text("Authorization uses sk-testkeytestkeytestkey12 here")
     assert changed
     assert "sk-testkeytestkeytestkey12" not in out
+
+
+def test_bearer_pattern_redacted():
+    text = "Authorization: Bearer abcdefghijklmnop0123456789"
+    out, changed = redact_text(text)
+    assert changed
+    assert "abcdefghijklmnop0123456789" not in out
+    assert REDACTED in out
+
+
+def test_leak_fingerprint_does_not_echo_secret():
+    secret = "super-secret-value-zzzz"
+    leaks = assert_no_secret_leak(f"x {secret} y", [secret])
+    assert len(leaks) == 1
+    assert secret not in leaks[0]
+    assert "secret_leak" in leaks[0]

@@ -24,7 +24,8 @@ Operators must only run Sandrail against:
 | Data | Collected? | Stored? | Shared? |
 |------|------------|---------|---------|
 | Eval suite files (JSON/YAML) | Read locally | Not retained by tool (stdout/files you choose) | No (local only) |
-| Captured stdout/stderr of agents | In-memory for scoring/report | Only if you redirect output | No (local only) |
+| Captured stdout/stderr of agents | In-memory for scoring/report | Only if you redirect output or write `--junit-xml` | No (local only; redacted before write) |
+| JUnit / JSON reports | Generated on request | Path you pass to `--junit-xml` / stdout | No (local/CI artifact you control) |
 | `OPENAI_API_KEY` / similar | Read from env when openai backend used | Never written by Sandrail | Sent only to `OPENAI_BASE_URL` you configure |
 | Telemetry / analytics | **None** | — | — |
 | Accounts / cloud sync | **None** | — | — |
@@ -49,3 +50,7 @@ Fixture secrets in examples/tests are **synthetic** and must never be real crede
 - [ ] Organizational acceptable-use policy alignment for internal agent evals
 - [ ] Any future network features beyond explicit `--allow-network` + env-configured API base URL — fresh threat model + privacy review
 - [ ] Retention policy if reports are archived in shared CI artifact stores
+
+## Version notes
+
+- **v0.2.0:** Optional JUnit XML reporting; expanded local eval fixtures (timeout, allow-list deny, redaction). No new network features; secure defaults unchanged. Threat model documented in `SECURITY.md`.
