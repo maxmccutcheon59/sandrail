@@ -1,0 +1,20 @@
+name: subprocess-smoke
+description: Allow-listed subprocess cases under sandbox defaults
+cases:
+  - id: subprocess-echo
+    description: Allow-listed echo under sandbox
+    tags: [subprocess, sandbox]
+    input:
+      argv: ["echo", "sandbox-ok"]
+    expect:
+      exit_code: 0
+      stdout_contains: ["sandbox-ok"]
+
+  - id: subprocess-python
+    description: Allow-listed python3 one-liner
+    tags: [subprocess]
+    input:
+      argv: ["python3", "-c", "print(2+2)"]
+    expect:
+      exit_code: 0
+      stdout_contains: ["4"]

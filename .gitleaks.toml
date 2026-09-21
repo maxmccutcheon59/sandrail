@@ -1,0 +1,8 @@
+title = "sandrail"
+
+[allowlist]
+description = "Synthetic fixture secrets for redaction / prompt-injection tests"
+paths = [
+  '''tests/.*''',
+  '''examples/.*''',
+]

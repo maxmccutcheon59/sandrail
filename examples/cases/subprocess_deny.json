@@ -1,0 +1,17 @@
+{
+  "name": "subprocess-deny",
+  "description": "Commands outside the allow-list are denied (exit 126)",
+  "cases": [
+    {
+      "id": "deny-curl",
+      "description": "curl is not allow-listed",
+      "input": {
+        "argv": ["curl", "https://example.com"]
+      },
+      "expect": {
+        "exit_code": 126,
+        "stderr_contains": ["not allow-listed"]
+      }
+    }
+  ]
+}
