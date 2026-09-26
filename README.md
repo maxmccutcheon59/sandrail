@@ -189,7 +189,7 @@ pytest -q
 ruff check src tests
 ```
 
-CI reference workflows (gitleaks + pip-audit + pytest) live under [`ci/`](ci/) when the pushing credential lacks the GitHub `workflow` scope — copy into `.github/workflows/` once that scope is available.
+CI runs on every push: Ruff, pytest on Python 3.10, 3.12, and 3.13, the example suites, a gitleaks secret scan, and pip-audit. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ---
 
