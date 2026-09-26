@@ -4,7 +4,7 @@
 
 Secure by default: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Not a hosted SaaS. No accounts. No telemetry.
 
-**Product page:** [https://maxmccutcheon59.github.io/sandrail-site/](https://maxmccutcheon59.github.io/sandrail-site/) — honest local-first overview (no fake traction).
+**Product page:** [https://maxmccutcheon59.github.io/sandrail-site/](https://maxmccutcheon59.github.io/sandrail-site/)
 
 ## Install
 
