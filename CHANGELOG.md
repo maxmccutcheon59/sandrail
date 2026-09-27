@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- README Quick start is the clone → `sandrail demo` → packs path, including Python 3.10+ and what a passing run looks like (the demo’s intentional fail does not fail the command).
+- `SECURITY.md` supported-versions table lists 0.3.x as the supported line.
+
 ## [0.3.0] — 2026-09-21
 
 ### Added

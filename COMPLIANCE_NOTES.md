@@ -11,7 +11,7 @@
 - **Local-first eval harness / agent sandbox CLI** for scoring pluggable agent backends (mock, allow-listed subprocess, optional OpenAI-compatible local API).
 - **Not a full LLM** and **does not train models**.
 - **Secure-by-default:** network deny unless opted in; no `shell=True` with user strings; argument arrays only; cwd jail; timeouts; log redaction.
-- Portfolio / educational project demonstrating eval-harness engineering used by AI startups.
+- Portfolio / educational CLI. This repository does not claim customers, revenue, or a hosted product.
 
 ## Authorized systems only
 
