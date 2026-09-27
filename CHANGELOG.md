@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - README Quick start is the clone → `sandrail demo` → packs path, including Python 3.10+ and what a passing run looks like (the demo’s intentional fail does not fail the command).
 - `SECURITY.md` supported-versions table lists 0.3.x as the supported line.
+- CI runs `sandrail demo`, `sandrail packs list`, and `sandrail packs run` for `ci_gate`, `tool_sandbox`, and `redaction`.
+- `examples/packs/ci_gate/README.md` no longer says `pip install sandrail` (there is no PyPI package). Copy-into-CI uses the git URL plus `sandrail run`.
 
 ## [0.3.0] — 2026-09-21
 

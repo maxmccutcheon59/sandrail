@@ -24,6 +24,8 @@ sandrail packs run redaction
 
 On Debian/Ubuntu, if `python3 -m venv` reports that `ensurepip` is missing, install `python3-venv` and create the venv again.
 
+`pip install sandrail` fails: the project is not on PyPI. `sandrail demo` and `sandrail packs` read `examples/` from this checkout, so keep the editable install above. A non-editable install can still score a suite file you already have: `pip install "sandrail @ git+https://github.com/maxmccutcheon59/sandrail.git"` then `sandrail run path/to/suite.yaml --backend mock`. Tag `v0.3.0` behaves the same way.
+
 Console script: **`sandrail`**. Runtime dependency: **PyYAML** (plus the stdlib). Optional dev tools: `pip install -e ".[dev]"`.
 
 **What a good run looks like**
@@ -206,7 +208,7 @@ pytest -q
 ruff check src tests
 ```
 
-CI runs on every push: Ruff, pytest on Python 3.10, 3.12, and 3.13, the example suites, a gitleaks secret scan, and pip-audit. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+CI runs on every push and pull request: Ruff, pytest on Python 3.10, 3.12, and 3.13, the example suites, the Quick start commands (`sandrail demo`, `sandrail packs list`, `sandrail packs run` for `ci_gate`, `tool_sandbox`, and `redaction`), a gitleaks secret scan, and pip-audit. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ---
 
