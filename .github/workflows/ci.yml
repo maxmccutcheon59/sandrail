@@ -43,6 +43,16 @@ jobs:
           sandrail run examples/cases/timeout.yaml --backend subprocess
           sandrail run examples/cases/prompt_injection_redaction.yaml --backend mock --format json
 
+      - name: Stranger path (demo and packs)
+        env:
+          SANDRAIL_FIXTURE_SECRET: synth-secret-DO-NOT-USE-9f3a2c1b
+        run: |
+          sandrail demo
+          sandrail packs list
+          sandrail packs run ci_gate
+          sandrail packs run tool_sandbox
+          sandrail packs run redaction
+
   secret-scan:
     runs-on: ubuntu-latest
     permissions:

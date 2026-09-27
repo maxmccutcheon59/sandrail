@@ -6,7 +6,9 @@ Secure by default: **network deny**, `shell=False`, command allow-list, cwd jail
 
 **Product page:** [https://maxmccutcheon59.github.io/sandrail-site/](https://maxmccutcheon59.github.io/sandrail-site/)
 
-## Install
+## Quick start
+
+About five minutes. Needs **Python 3.10+**. No account and no API key. The demo and the packs below do not open a network connection (`pip install` still downloads PyYAML).
 
 ```bash
 git clone https://github.com/maxmccutcheon59/sandrail.git
@@ -16,9 +18,26 @@ pip install -e .
 sandrail demo
 sandrail packs list
 sandrail packs run ci_gate
+sandrail packs run tool_sandbox
+sandrail packs run redaction
 ```
 
-Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib). Optional: `pip install -e ".[dev]"`.
+On Debian/Ubuntu, if `python3 -m venv` reports that `ensurepip` is missing, install `python3-venv` and create the venv again.
+
+`pip install sandrail` fails: the project is not on PyPI. `sandrail demo` and `sandrail packs` read `examples/` from this checkout, so keep the editable install above. A non-editable install can still score a suite file you already have: `pip install "sandrail @ git+https://github.com/maxmccutcheon59/sandrail.git"` then `sandrail run path/to/suite.yaml --backend mock`. Tag `v0.3.0` behaves the same way.
+
+Console script: **`sandrail`**. Runtime dependency: **PyYAML** (plus the stdlib). Optional dev tools: `pip install -e ".[dev]"`.
+
+**What a good run looks like**
+
+- `sandrail demo` exits **0**. Five control suites pass (the timeout fixture waits about 0.4s). A bonus block prints **expected FAIL** — that suite is an intentional regression (one case passes, one does not) so you can see a gate fire. It does not fail the demo.
+- `sandrail packs list` prints three packs: `ci_gate`, `tool_sandbox`, `redaction`.
+- Each `packs run` above exits **0**:
+  - `ci_gate` — mock cases that stay green (a separate file, `examples/packs/ci_gate/expected_fail.yaml`, is the intentional red build).
+  - `tool_sandbox` — allow-listed commands pass; `curl` / `wget` / `bash` / `sh` / `nc` score exit **126**; a slow sleep scores exit **124**. Those rows say `ok` because the deny and the timeout are the expected results.
+  - `redaction` — synthetic secrets and key-shaped strings do not appear in the report.
+
+Suite exit codes: **0** all passed · **1** one or more cases failed · **2** bad suite or usage.
 
 ## Security stance
 
@@ -28,9 +47,9 @@ Console script: **`sandrail`**. Runtime deps: **PyYAML** (+ stdlib). Optional: `
 - Authorized **local** use only — do not point Sandrail at systems you do not own or lack written permission to test.
 - Secrets via env only; fixture secrets are synthetic. See [SECURITY.md](SECURITY.md).
 
-## Why founders use this
+## What it is for
 
-AI product teams need **repeatable, local, CI-friendly evals** before they trust an agent in production:
+Repeatable, local, CI-friendly evals before an agent is trusted in production:
 
 1. **Regression gates** — lock behavior with YAML/JSON cases; fail the build when a prompt change regresses. Start from `sandrail packs run ci_gate`.
 2. **Sandbox by default** — deny network unless opted in; cwd jail; allow-listed commands; never `shell=True` with user strings. Pack: `tool_sandbox`.
@@ -44,7 +63,7 @@ AI product teams need **repeatable, local, CI-friendly evals** before they trust
 
 | Pack | Command | What it is |
 |------|---------|------------|
-| `ci_gate` | `sandrail packs run ci_gate` | Mock regression gate founders can copy into CI |
+| `ci_gate` | `sandrail packs run ci_gate` | Mock regression gate you can copy into CI |
 | `tool_sandbox` | `sandrail packs run tool_sandbox` | Allow-list smoke · deny (126) · timeout (124) |
 | `redaction` | `sandrail packs run redaction` | Secret-leak-to-logs prevention |
 
@@ -59,10 +78,10 @@ See [`examples/packs/README.md`](examples/packs/README.md).
 
 ---
 
-## Quick start
+## More commands
 
 ```bash
-# Packs (recommended entry for founders)
+# Packs (same entry as Quick start)
 sandrail packs list
 sandrail packs run ci_gate
 
@@ -189,7 +208,7 @@ pytest -q
 ruff check src tests
 ```
 
-CI runs on every push: Ruff, pytest on Python 3.10, 3.12, and 3.13, the example suites, a gitleaks secret scan, and pip-audit. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+CI runs on every push and pull request: Ruff, pytest on Python 3.10, 3.12, and 3.13, the example suites, the Quick start commands (`sandrail demo`, `sandrail packs list`, `sandrail packs run` for `ci_gate`, `tool_sandbox`, and `redaction`), a gitleaks secret scan, and pip-audit. See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ---
 

@@ -6,8 +6,9 @@ Security fixes are applied on the latest release of **Sandrail** on `main`. Olde
 
 | Version | Supported |
 |---------|-----------|
-| 0.2.x   | Yes |
-| 0.1.x   | Best-effort until 0.2 is adopted |
+| 0.3.x   | Yes |
+| 0.2.x   | Best-effort |
+| 0.1.x   | Best-effort |
 | < 0.1   | No |
 
 ## Reporting a vulnerability
