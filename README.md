@@ -1,5 +1,8 @@
 # Sandrail
 
+[![CI](https://github.com/maxmccutcheon59/sandrail/actions/workflows/ci.yml/badge.svg)](https://github.com/maxmccutcheon59/sandrail/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 **Local-first AI eval harness / agent sandbox CLI** — score agents safely on a laptop or in CI.
 
 Secure by default: **network deny**, `shell=False`, command allow-list, cwd jail, timeouts, secret redaction. Not a hosted SaaS. No accounts. No telemetry.
